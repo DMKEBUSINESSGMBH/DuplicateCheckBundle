@@ -1,0 +1,50 @@
+<container xmlns="http://symfony.com/schema/dic/services">
+    <services>
+        <service id="dmk_duplicate_check.finder" class="DMK\DuplicateCheckBundle\Finder">
+            <argument type="collection" />
+        </service>
+        <service id="dmk_duplicate_check.facade" class="DMK\DuplicateCheckBundle\Facade">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="dmk_duplicate_check.finder" />
+        </service>
+        <service id="dmk_duplicate_check.async.duplicate_check_id_processor" class="DMK\DuplicateCheckBundle\Async\DuplicateCheckByIdProcessor">
+            <argument type="service" id="dmk_duplicate_check.finder" />
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="oro_message_queue.job.runner" />
+            <argument type="service" id="logger" />
+
+            <tag name="oro_message_queue.client.message_processor" />
+        </service>
+        <service id="dmk_duplicate_check.async.duplicate_check_class_processor" class="DMK\DuplicateCheckBundle\Async\DuplicateCheckByClassProcessor">
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="oro_message_queue.client.message_producer" />
+            <argument type="service" id="oro_message_queue.job.runner" />
+            <argument type="service" id="logger" />
+
+            <tag name="oro_message_queue.client.message_processor" />
+        </service>
+        <service id="dmk_duplicate_check.async.duplicate_check_range_processor" class="DMK\DuplicateCheckBundle\Async\DuplicateCheckByRangeProcessor">
+            <argument type="service" id="dmk_duplicate_check.facade" />
+            <argument type="service" id="doctrine" />
+            <argument type="service" id="oro_message_queue.job.runner" />
+            <argument type="service" id="logger" />
+
+            <tag name="oro_message_queue.client.message_processor" />
+        </service>
+
+        <service id="dmk_duplicate_check.search_command" class="DMK\DuplicateCheck\Command\SearchCommand">
+            <argument type="service" id="oro_message_queue.client.message_producer" />
+            <argument type="service" id="dmk_duplicate_check.facade" />
+            <argument type="service" id="doctrine" />
+
+            <tag name="console.command" />
+        </service>
+        <service id="dmk_duplicate_check.search_class_command" class="DMK\DuplicateCheck\Command\SearchByClassCommand">
+            <argument type="service" id="oro_message_queue.client.message_producer" />
+            <argument type="service" id="dmk_duplicate_check.facade" />
+            <argument type="service" id="doctrine" />
+
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>

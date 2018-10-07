@@ -1,0 +1,42 @@
+{
+    "name": "dmk/duplicate-check-bundle",
+    "description": "Finds duplicate in you CRM",
+    "type": "bundle",
+    "autoload": {
+        "psr-4": {
+            "DMK\\DuplicateCheckBundle\\": "src/"
+        }
+    },
+    "repositories": {
+        "oro": {
+            "type": "composer",
+            "url": "https://packagist.orocrm.com"
+        },
+        "asset-packagist": {
+            "type": "composer",
+            "url": "https://asset-packagist.orocrm.com"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DMK\\DuplicateCheckBundle\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "oro/platform": "^2.6|^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.4"
+    },
+    "suggest": {
+        "oro/crm": "^2.6|^3.0"
+    },
+    "authors": [
+        {
+            "name": "Markus Bachmann DMK",
+            "email": "markus.bachmann@dmk-ebusiness.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
