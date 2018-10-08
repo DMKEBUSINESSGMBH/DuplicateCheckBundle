@@ -12,7 +12,7 @@ variables:
         - composer require oro/platform:${ORO_VERSION}  --ignore-platform-reqs --no-update
         - composer update --no-interaction --ignore-platform-reqs
         - docker-php-ext-enable xdebug
-        - vendor/bin/phpunit --coverage-text --colors=never .
+        - vendor/bin/phpunit --coverage-text --colors=never
 
 unittest:2.6:
     extends: .unittest
