@@ -2,6 +2,8 @@ image: tetraweb/php:7.1
 
 variables:
     COMPOSER_CACHE_DIR: /cache/composer
+    COMPOSER_MEMORY_LIMIT: -1
+    COMPOSER_ALLOW_SUPERUSER: 1
 
 .unittest:
     coverage: '/^\s*Lines:\s*\d+.\d+\%/'
