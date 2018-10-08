@@ -8,6 +8,7 @@ variables:
 .unittest:
     coverage: '/^\s*Lines:\s*\d+.\d+\%/'
     script:
+        - docker-php-ext-enable zip
         - composer require oro/platform:${ORO_VERSION}  --ignore-platform-reqs --no-update
         - composer update --no-interaction --ignore-platform-reqs
         - docker-php-ext-enable xdebug
@@ -26,7 +27,7 @@ unittests:3.0:
 unittests:3.2:
     extends: .unittest
     variables:
-        ORO_VERSION: 3.2.*
+        ORO_VERSION: 3.2.*@beta
 
 unittests:latest:
     extends: .unittest
