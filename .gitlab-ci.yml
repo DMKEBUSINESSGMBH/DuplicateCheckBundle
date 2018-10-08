@@ -1,0 +1,33 @@
+image: tetraweb/php:7.1
+
+variables:
+    COMPOSER_CACHE_DIR: /cache/composer
+
+.unittest:
+    coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+    script:
+        - composer require oro/platform:${ORO_VERSION}  --ignore-platform-reqs --no-update
+        - composer update --no-interaction --quiet --ignore-platform-reqs
+        - docker-php-ext-enable xdebug
+        - vendor/bin/phpunit --coverage-text --colors=never .
+
+unittest:2.6:
+    extends: .unittest
+    environment:
+        ORO_VERSION: 2.6.*
+
+unittests:3.0:
+    extends: .unittest
+    environment:
+        ORO_VERSION: 3.0.*
+
+unittests:3.2:
+    extends: .unittest
+    environment:
+        ORO_VERSION: 3.2.*
+
+unittests:latest:
+    extends: .unittest
+    allow_failure: true
+    environment:
+        ORO_VERSION: dev-master
