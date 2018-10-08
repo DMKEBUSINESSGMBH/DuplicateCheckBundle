@@ -13,21 +13,21 @@ variables:
 
 unittest:2.6:
     extends: .unittest
-    environment:
+    variables:
         ORO_VERSION: 2.6.*
 
 unittests:3.0:
     extends: .unittest
-    environment:
+    variables:
         ORO_VERSION: 3.0.*
 
 unittests:3.2:
     extends: .unittest
-    environment:
+    variables:
         ORO_VERSION: 3.2.*
 
 unittests:latest:
     extends: .unittest
     allow_failure: true
-    environment:
+    variables:
         ORO_VERSION: dev-master
