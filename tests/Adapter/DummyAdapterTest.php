@@ -22,6 +22,9 @@ class DummyAdapterTest extends TestCase
 
     public function testProcess()
     {
-        $this->assertEmpty($this->adapter->process(new \stdClass()));
+        $results = $this->adapter->process(new \stdClass());
+        $results = iterator_to_array($results);
+
+        $this->assertEmpty($results);
     }
 }

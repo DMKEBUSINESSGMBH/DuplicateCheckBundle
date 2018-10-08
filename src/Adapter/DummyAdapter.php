@@ -8,7 +8,7 @@ class DummyAdapter implements AdapterInterface
 {
     public function process($object): iterable
     {
-        yield null;
+        yield from [];
     }
 
     public function support($object): bool
