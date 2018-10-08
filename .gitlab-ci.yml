@@ -24,7 +24,7 @@ unittests:3.0:
     variables:
         ORO_VERSION: 3.0.*
 
-unittests:3.2:
+unittests:3.1:
     extends: .unittest
     variables:
         ORO_VERSION: 3.1.*@beta
