@@ -39,7 +39,10 @@ class DuplicateCheckByClassProcessor implements MessageProcessorInterface, Topic
     {
         $body = JSON::decode($message->getBody());
 
-        $result = $this->runner->createDelayed($body['jobId'], function(JobRunner $jobRunner) use ($body) {
+        $result = $this->runner->runUnique(
+            $message->getMessageId(),
+            sprintf('%s:%s', Topics::TOPIC_CHECK_CLASS, $body['entityClass']),
+            function(JobRunner $jobRunner) use ($body) {
             /** @var EntityManager $em */
             if (! $em = $this->registry->getManagerForClass($body['entityClass'])) {
                 $this->logger->error(

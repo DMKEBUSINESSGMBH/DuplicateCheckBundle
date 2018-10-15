@@ -3,6 +3,11 @@ declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Command;
 
+use DMK\DuplicateCheckBundle\Async\Topics;
+use DMK\DuplicateCheckBundle\Facade;
+use Doctrine\ORM\EntityManagerInterface;
+use Oro\Bundle\ConfigBundle\Config\ConfigManager;
+use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;
 use Oro\Component\MessageQueue\Client\MessageProducerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,8 +19,19 @@ class SearchByClassCommand extends Command
 {
     private $producer;
 
-    public function __construct(MessageProducerInterface $producer)
+    private $em;
+
+    private $facade;
+
+
+    public function __construct(
+        MessageProducerInterface $producer,
+        EntityManagerInterface $em,
+        Facade $facade
+    )
     {
+        $this->em = $em;
+        $this->facade = $facade;
         $this->producer = $producer;
 
         parent::__construct('');
@@ -32,6 +48,20 @@ class SearchByClassCommand extends Command
     {
         $class = $input->getArgument('class');
 
-        // To be implemented
+        if ($input->getOption('scheduled')) {
+            $this->producer->send(Topics::TOPIC_CHECK_CLASS, [
+               'entityClass' => $class,
+            ]);
+
+            return;
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('e')->from($class, 'e');
+        $result = $qb->getQuery()->iterate();
+
+        foreach ($result as $row) {
+            $this->facade->search($row);
+        }
     }
 }

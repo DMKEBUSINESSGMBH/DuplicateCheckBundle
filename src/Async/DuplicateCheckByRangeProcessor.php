@@ -42,7 +42,7 @@ class DuplicateCheckByRangeProcessor implements MessageProcessorInterface, Topic
     {
         $payload = JSON::decode($message->getBody());
 
-        $result = $this->runner->runDelayed($payload['jobId'], function () use ($message, $payload) {
+        $result = $this->runner->runDelayed($payload['jobId'], function () use ($payload) {
             if (! isset($payload['entityClass'], $payload['offset'], $payload['limit'])) {
                 $this->logger->error('Message is not valid.');
 
