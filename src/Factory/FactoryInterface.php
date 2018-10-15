@@ -7,5 +7,13 @@ use DMK\DuplicateCheckBundle\Model\DuplicateInterface;
 
 interface FactoryInterface
 {
-    public function create($object, $weight): DuplicateInterface;
+    /**
+     * Creates an instance of the duplicate
+     *
+     * @param object $object
+     * @param float $weight
+     *
+     * @return DuplicateInterface
+     */
+    public function create($object, float $weight): DuplicateInterface;
 }

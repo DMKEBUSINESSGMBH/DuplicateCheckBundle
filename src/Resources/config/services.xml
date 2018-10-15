@@ -1,5 +1,8 @@
 <container xmlns="http://symfony.com/schema/dic/services">
     <services>
+        <service id="dmk_duplicate_check.config_provider" class="DMK\DuplicateCheckBundle\Provider\ConfigProvider" public="false">
+            <argument type="service" id="oro_entity_config.config_manager" />
+        </service>
         <service id="dmk_duplicate_check.finder" class="DMK\DuplicateCheckBundle\Finder">
             <argument type="collection" />
         </service>
@@ -32,19 +35,26 @@
             <tag name="oro_message_queue.client.message_processor" />
         </service>
 
-        <service id="dmk_duplicate_check.search_command" class="DMK\DuplicateCheck\Command\SearchCommand">
+        <service id="dmk_duplicate_check.search_command" class="DMK\DuplicateCheckBundle\Command\SearchCommand">
             <argument type="service" id="oro_message_queue.client.message_producer" />
             <argument type="service" id="dmk_duplicate_check.facade" />
             <argument type="service" id="doctrine" />
 
             <tag name="console.command" />
         </service>
-        <service id="dmk_duplicate_check.search_class_command" class="DMK\DuplicateCheck\Command\SearchByClassCommand">
+        <service id="dmk_duplicate_check.search_class_command" class="DMK\DuplicateCheckBundle\Command\SearchByClassCommand">
             <argument type="service" id="oro_message_queue.client.message_producer" />
             <argument type="service" id="dmk_duplicate_check.facade" />
             <argument type="service" id="doctrine" />
 
             <tag name="console.command" />
+        </service>
+
+        <service id="dmk_duplicate_check.event_listener.check" class="DMK\DuplicateCheckBundle\EventListener\CheckListener" public="false">
+            <argument type="service" id="oro_message_queue.client.message_producer" />
+            <argument type="service" id="dmk_duplicate_check.config_provider" />
+
+            <tag name="doctrine.event_subscriber" />
         </service>
     </services>
 </container>

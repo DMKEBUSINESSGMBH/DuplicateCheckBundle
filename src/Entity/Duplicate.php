@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Entity;
 
+use DMK\DuplicateCheckBundle\Model\ExtendDuplicate;
 use Doctrine\ORM\Mapping as ORM;
 use Oro\Bundle\EntityConfigBundle\Metadata\Annotation\Config;
 use Oro\Bundle\OrganizationBundle\Entity\OrganizationAwareInterface;
@@ -19,7 +20,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Ownership\OrganizationAwareTrait;
  *     }
  * })
  */
-class Duplicate extends BaseDuplicate
+class Duplicate extends ExtendDuplicate
     implements OrganizationAwareInterface
 {
     use OrganizationAwareTrait;

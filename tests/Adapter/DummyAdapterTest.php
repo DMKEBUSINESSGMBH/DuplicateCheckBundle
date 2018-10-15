@@ -17,7 +17,7 @@ class DummyAdapterTest extends TestCase
 
     public function testSupport()
     {
-        $this->assertTrue($this->adapter->support(new \stdClass()));
+        $this->assertTrue($this->adapter->supports(new \stdClass()));
     }
 
     public function testProcess()

@@ -15,7 +15,7 @@ interface FinderInterface
      * This method runs the duplicate check against all
      * matching adapters.
      *
-     * @param $object
+     * @param object $object
      *
      * @return DuplicateInterface[]
      */

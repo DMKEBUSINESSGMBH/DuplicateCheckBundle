@@ -44,34 +44,59 @@ abstract class BaseDuplicate implements DuplicateInterface
     protected $objectId;
 
     /**
-     * @var object
+     * @var object|null
      */
     protected $object;
 
     /**
-     * @var string
+     * @var \DateTime
      *
      * @ORM\Column(type="datetime", name="created_at")
      */
     protected $createdAt;
 
+    /**
+     * Creates a new entity from a object.
+     *
+     * @param EntityManagerInterface $em
+     * @param object $object
+     * @param float $weight
+     *
+     * @return self
+     */
     static public function create(EntityManagerInterface $em, $object, $weight = 0.5): self
     {
+        $ids = $em->getClassMetadata(ClassUtils::getClass($object))->getIdentifierValues($object);
+        $ids = current($ids);
+
         return new static(
-            ClassUtils::getClass($object),
-            $em->getClassMetadata($instance->class)->getIdentifierValues($object)[0],
+            $object,
+            $ids,
             $weight
         );
     }
 
-    public function __construct(string $class, int $id, float $weight = 0.5)
+    /**
+     * BaseDuplicate constructor.
+     *
+     * @param object $object
+     * @param int $id
+     * @param float $weight
+     */
+    public function __construct($object, int $id, float $weight = 0.5)
     {
         $this->weight = $weight * 100;
-        $this->class = $class;
+        $this->class = ClassUtils::getClass($object);
+        $this->object = $object;
         $this->id = $id;
         $this->createdAt = new \DateTime();
     }
 
+    /**
+     * Returns the internal database id.
+     *
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
@@ -93,12 +118,15 @@ abstract class BaseDuplicate implements DuplicateInterface
         return $this->weight / 100;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getObject()
     {
         return $this->object;
     }
 
-    public function onLoad(LifecycleEventArgs $args)
+    public function onLoad(LifecycleEventArgs $args): void
     {
         $em = $args->getEntityManager();
 

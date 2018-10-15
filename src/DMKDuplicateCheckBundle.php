@@ -7,7 +7,6 @@ use DMK\DuplicateCheckBundle\DependencyInjection\CompilerPass\EnterpriseCompiler
 use DMK\DuplicateCheckBundle\DependencyInjection\CompilerPass\RegisterAdapterCompilerPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Oro\Bundle\PlatformProBundle\OroPlatformProBundle;
 
 class DMKDuplicateCheckBundle extends Bundle
 {
@@ -22,6 +21,6 @@ class DMKDuplicateCheckBundle extends Bundle
 
     public static function isEnterpriseEdition(): bool
     {
-        return class_exists(OroPlatformProBundle::class);
+        return class_exists('Oro\Bundle\PlatformProBundle\OroPlatformProBundl');
     }
 }

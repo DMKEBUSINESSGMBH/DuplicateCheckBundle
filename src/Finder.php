@@ -8,6 +8,9 @@ use DMK\DuplicateCheckBundle\Adapter\AdapterInterface;
 
 final class Finder implements FinderInterface
 {
+    /**
+     * @var array
+     */
     private $adapters = [];
 
     public function __construct(array $adapters)
@@ -36,7 +39,7 @@ final class Finder implements FinderInterface
      */
     public function unregister(AdapterInterface $adapter): void
     {
-        if (false === $key = array_search($adapter, $this->adapters)) {
+        if (false === $key = array_search($adapter, $this->adapters, true)) {
             throw new AdapterNotFoundException(sprintf(
                 'The adapter "%s" was not registred before.',
                 get_class($adapter)
@@ -57,14 +60,14 @@ final class Finder implements FinderInterface
     }
 
     /**
-     * @param $object
+     * @param object $object
      *
      * @return AdapterInterface[]
      */
     private function getMatchingAdapters($object)
     {
         return array_filter($this->adapters, function (AdapterInterface $adapter) use ($object) {
-            return $adapter->support($object);
+            return $adapter->supports($object);
         });
     }
 }

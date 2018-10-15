@@ -6,18 +6,24 @@ namespace DMK\DuplicateCheckBundle\Factory;
 
 use DMK\DuplicateCheckBundle\Entity\Duplicate;
 use DMK\DuplicateCheckBundle\Model\DuplicateInterface;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 
 class EntityFactory implements FactoryInterface
 {
+    /**
+     * @var EntityManagerInterface
+     */
     private $em;
 
-    public function __construct(EntityManager $manager)
+    public function __construct(EntityManagerInterface $manager)
     {
         $this->em = $manager;
     }
 
-    public function create($object, $weight): DuplicateInterface
+    /**
+     * {@inheritdoc}
+     */
+    public function create($object, float $weight): DuplicateInterface
     {
         return Duplicate::create($this->em, $object, $weight);
     }
