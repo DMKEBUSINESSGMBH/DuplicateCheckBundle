@@ -1,0 +1,52 @@
+datagrids:
+    dmk-duplicates-grid:
+        extended_entity_name: "DMK\\DuplicateCheckBundle\\Model\\ExtendDuplicate"
+        source:
+            type: orm
+            query:
+                select:
+                    - duplicate.class
+                    - duplicate.id
+                    - duplicate.objectId
+                    - duplicate.weight
+                    - duplicate.createdAt
+                from:
+                    - { table: DMKDuplicateCheckBundle:Duplicate, alias: duplicate }
+                where:
+                    and:
+                        - duplicate.objectId = :objectId
+                        - duplicate.class = :class
+        columns:
+            objectName:
+                type: twig
+                label: dmk_duplicate_check.duplicate.object.label
+                frontend_type: html
+                template: DMKDuplicateCheckBundle:Datagrid/Property/objectName.html.twig
+            weight:
+                label: dmk_duplicate_check.duplicate.weight.label
+        sorters:
+            columns:
+                objectId:
+                    data_name: duplicate.objectId
+                objectClass:
+                    data_name: duplicate.class
+                createdAt:
+                    data_name: duplicate.createdAt
+                weight:
+                    data_name: duplicate.weight
+            default:
+                weight: DESC
+        filters:
+            columns:
+                objectId:
+                    type: number-range
+                    data_name: duplicate.objectId
+                weight:
+                    type: number-range
+                    data_name: duplicate.weight
+                objectClass:
+                    type: choice
+                    data_name: duplicate.class
+                    options:
+                        field_options:
+                            choices: "@dmk_duplicate_check.datagrid.entity_type_provider->getEntityTypes"

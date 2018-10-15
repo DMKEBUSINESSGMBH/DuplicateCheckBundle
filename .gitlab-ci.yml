@@ -34,3 +34,15 @@ unittests:latest:
     allow_failure: true
     variables:
         ORO_VERSION: dev-master
+
+phpcs:
+    script:
+        - docker-php-ext-enable zip
+        - composer update --no-interaction --ignore-platform-reqs
+        - vendor/bin/php-cs-fixer fix . --dry-run -v --diff
+
+phpstan:
+    script:
+        - docker-php-ext-enable zip
+        - composer update --no-interaction --ignore-platform-reqs
+        - vendor/bin/phpstan analyze src --level=max
