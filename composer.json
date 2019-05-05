@@ -4,7 +4,7 @@
     "type": "bundle",
     "autoload": {
         "psr-4": {
-            "DMK\\DuplicateCheckBundle\\": "src/"
+            "DMK\\DuplicateCheckBundle\\": ""
         }
     },
     "repositories": {
@@ -19,7 +19,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "DMK\\DuplicateCheckBundle\\Tests\\": "tests/"
+            "DMK\\DuplicateCheckBundle\\Tests\\": "Tests/"
         }
     },
     "require": {
