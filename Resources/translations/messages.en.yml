@@ -1,0 +1,23 @@
+dmk:
+    duplicatecheck:
+        module_label:           "Duplicate Check"
+        duplicates:         "Duplicates"
+        duplicates.title:   "%item% duplicates"
+
+        duplicate:
+            entity_label: 'Duplicate'
+            entity_plural_label: 'Duplicates'
+            class:
+                label: 'Class'
+            created_at:
+                label: 'Created At'
+            id:
+                label: 'Id'
+            name:
+                label: 'Name'
+            object_id:
+                label: 'Object ID'
+            weight:
+                label: 'Weight'
+            organization:
+                label: 'Organization'
