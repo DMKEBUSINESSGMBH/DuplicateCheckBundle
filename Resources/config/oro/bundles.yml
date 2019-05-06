@@ -1,0 +1,2 @@
+bundles:
+    - { name: DMK\DuplicateCheckBundle\DMKDuplicateCheckBundle, priority: 10 }
