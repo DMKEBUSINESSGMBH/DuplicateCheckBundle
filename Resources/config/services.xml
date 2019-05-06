@@ -38,14 +38,14 @@
         <service id="dmk_duplicate_check.search_command" class="DMK\DuplicateCheckBundle\Command\SearchCommand">
             <argument type="service" id="oro_message_queue.client.message_producer" />
             <argument type="service" id="dmk_duplicate_check.facade" />
-            <argument type="service" id="doctrine" />
+            <argument type="service" id="oro_entity.doctrine_helper" />
 
             <tag name="console.command" />
         </service>
         <service id="dmk_duplicate_check.search_class_command" class="DMK\DuplicateCheckBundle\Command\SearchByClassCommand">
             <argument type="service" id="oro_message_queue.client.message_producer" />
+            <argument type="service" id="oro_entity.doctrine_helper" />
             <argument type="service" id="dmk_duplicate_check.facade" />
-            <argument type="service" id="doctrine" />
 
             <tag name="console.command" />
         </service>
@@ -56,5 +56,17 @@
 
             <tag name="doctrine.event_subscriber" />
         </service>
+        <service class="DMK\DuplicateCheckBundle\Placeholder\DuplicateFilter" id="dmk_duplicate_check.placeholder.duplicate_filter">
+            <argument id="dmk_duplicate_check.config_provider" type="service"/>
+        </service>
+        <service class="DMK\DuplicateCheckBundle\Datagrid\EntityTypeProvider" id="dmk_duplicate_check.datagrid.entity_type_provider">
+            <argument id="oro_entity.entity_class_name_provider" type="service"/>
+            <argument id="dmk_duplicate_check.config_provider" type="service"/>
+        </service>
+
+        <service class="DMK\DuplicateCheckBundle\EventListener\DuplicateWidgetGridListener" id="dmk_duplicate_check.event_listener.duplicate_widget_grid_listener">
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
     </services>
 </container>

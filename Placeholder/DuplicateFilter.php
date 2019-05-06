@@ -18,7 +18,6 @@ class DuplicateFilter
     {
         $class = ClassUtils::getClass($entity);
 
-        return true;
         return $this->config->isEntityEnabled($class);
     }
 }

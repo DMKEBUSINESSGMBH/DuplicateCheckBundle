@@ -1,12 +1,13 @@
 datagrids:
     dmk-duplicates-grid:
-        extended_entity_name: "DMK\\DuplicateCheckBundle\\Model\\ExtendDuplicate"
+        acl_resource: dmk_duplicate_view
         source:
             type: orm
             query:
                 select:
                     - duplicate.class
                     - duplicate.id
+                    - duplicate.name
                     - duplicate.objectId
                     - duplicate.weight
                     - duplicate.createdAt
@@ -15,20 +16,35 @@ datagrids:
                 where:
                     and:
                         - duplicate.objectId = :objectId
-                        - duplicate.class = :class
+                        - duplicate.class = :objectClass
+            bind_parameters:
+                - object_id
+                - object_class
         columns:
-            objectName:
-                type: twig
-                label: dmk_duplicate_check.duplicate.object.label
-                frontend_type: html
-                template: DMKDuplicateCheckBundle:Datagrid/Property/objectName.html.twig
+            id:
+                renderable: false
+                manageable: false
+            objectId:
+                label: dmk.duplicatecheck.duplicate.object_id.label
+                frontend_type: integer
+                renderable: false
+            class:
+                label: dmk.duplicatecheck.duplicate.class.label
+                type: callback
+                callable: "@dmk_duplicate_check.datagrid.entity_type_provider->getEntityType"
+            name:
+                label: dmk.duplicatecheck.duplicate.name.label
             weight:
-                label: dmk_duplicate_check.duplicate.weight.label
+                label: dmk.duplicatecheck.duplicate.weight.label
+                frontend_type: integer
+            createdAt:
+                label: oro.ui.created_at
+                frontend_type: datetime
         sorters:
             columns:
                 objectId:
                     data_name: duplicate.objectId
-                objectClass:
+                class:
                     data_name: duplicate.class
                 createdAt:
                     data_name: duplicate.createdAt
@@ -44,7 +60,7 @@ datagrids:
                 weight:
                     type: number-range
                     data_name: duplicate.weight
-                objectClass:
+                class:
                     type: choice
                     data_name: duplicate.class
                     options:
