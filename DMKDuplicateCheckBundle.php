@@ -21,6 +21,6 @@ class DMKDuplicateCheckBundle extends Bundle
 
     public static function isEnterpriseEdition(): bool
     {
-        return class_exists('Oro\Bundle\PlatformProBundle\OroPlatformProBundl');
+        return class_exists('Oro\Bundle\PlatformProBundle\OroPlatformProBundle');
     }
 }
