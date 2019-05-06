@@ -5,7 +5,8 @@ namespace DMK\DuplicateCheckBundle\Command;
 
 use DMK\DuplicateCheckBundle\Async\Topics;
 use DMK\DuplicateCheckBundle\Facade;
-use Oro\Component\MessageQueue\Client\MessageProducer;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
+use Oro\Component\MessageQueue\Client\MessageProducerInterface;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -16,16 +17,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SearchCommand extends Command
 {
     private $producer;
-    private $registry;
+    private $helper;
     private $facade;
 
-    public function __construct(MessageProducer $producer, Facade $facade, RegistryInterface $registry)
+    public function __construct(MessageProducerInterface $producer, Facade $facade, DoctrineHelper $doctrineHelper)
     {
         $this->producer = $producer;
-        $this->registry = $registry;
+        $this->helper = $doctrineHelper;
         $this->facade = $facade;
 
-        parent::__construct('');
+        parent::__construct(null);
     }
 
     protected function configure()
@@ -46,7 +47,7 @@ HELP
         $class = $input->getArgument('class');
         $id = $input->getArgument('id');
 
-        $entity = $this->registry->getManagerForClass($class)->find($class, $id);
+        $entity = $this->helper->getEntity($class, $id);
 
         if ($input->getOption('scheduled')) {
             $this->producer->send(Topics::TOPIC_CHECK_SINGLE, [

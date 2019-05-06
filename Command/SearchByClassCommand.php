@@ -7,6 +7,7 @@ use DMK\DuplicateCheckBundle\Async\Topics;
 use DMK\DuplicateCheckBundle\Facade;
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\ConfigBundle\Config\ConfigManager;
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;
 use Oro\Component\MessageQueue\Client\MessageProducerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -19,22 +20,25 @@ class SearchByClassCommand extends Command
 {
     private $producer;
 
-    private $em;
+    /**
+     * @var DoctrineHelper
+     */
+    private $helper;
 
     private $facade;
 
 
     public function __construct(
         MessageProducerInterface $producer,
-        EntityManagerInterface $em,
+        DoctrineHelper $helper,
         Facade $facade
     )
     {
-        $this->em = $em;
+        $this->helper = $helper;
         $this->facade = $facade;
         $this->producer = $producer;
 
-        parent::__construct('');
+        parent::__construct(null);
     }
 
     protected function configure()
@@ -56,7 +60,8 @@ class SearchByClassCommand extends Command
             return;
         }
 
-        $qb = $this->em->createQueryBuilder();
+        $em = $this->helper->getEntityManager($class);
+        $qb = $em->createQueryBuilder();
         $qb->select('e')->from($class, 'e');
         $result = $qb->getQuery()->iterate();
 
