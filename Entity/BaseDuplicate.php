@@ -39,6 +39,13 @@ abstract class BaseDuplicate implements DuplicateInterface
     /**
      * @var string
      *
+     * @ORM\Column(type="string")
+     */
+    protected $name;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(type="integer", name="object_id")
      */
     protected $objectId;
@@ -124,6 +131,23 @@ abstract class BaseDuplicate implements DuplicateInterface
     public function getObject()
     {
         return $this->object;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     public function onLoad(LifecycleEventArgs $args): void
