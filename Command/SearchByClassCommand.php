@@ -65,7 +65,7 @@ class SearchByClassCommand extends Command
         $qb->select('e')->from($class, 'e');
         $result = $qb->getQuery()->iterate();
 
-        foreach ($result as $row) {
+        foreach ($result->next() as $row) {
             $this->facade->search($row);
         }
     }
