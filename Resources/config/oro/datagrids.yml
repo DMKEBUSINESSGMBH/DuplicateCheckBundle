@@ -15,13 +15,8 @@ datagrids:
                     - { table: DMKDuplicateCheckBundle:Duplicate, alias: duplicate }
                 where:
                     and:
-<<<<<<< HEAD:Resources/config/oro/datagrid.yml
-                        - duplicate.objectId = :object_id
-                        - duplicate.class = :object_class
-=======
                         - duplicate.objectId = :objectId
                         - duplicate.class = :objectClass
->>>>>>> d9b336ca0fa4f4a9a5dc79952101ee8da425a495:Resources/config/oro/datagrids.yml
             bind_parameters:
                 - object_id
                 - object_class
