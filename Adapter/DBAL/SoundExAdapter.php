@@ -13,6 +13,8 @@ class SoundExAdapter extends AbstractORMAdapter
             sprintf('SOUNDEX(e.%s)', $fieldName),
             sprintf('SOUNDEX(:param_%s)', $fieldName)
         ));
+
+        $qb->setParameter('param_' . $fieldName, $value);
     }
 
     protected function getWeight($item): float

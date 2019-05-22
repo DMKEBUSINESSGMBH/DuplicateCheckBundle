@@ -56,12 +56,12 @@ abstract class AbstractORMAdapter implements AdapterInterface
         /** @var QueryBuilder $qb */
         $qb = $this->registry->getRepository($class)
             ->createQueryBuilder('e');
-        $qb->andHaving($qb->expr()->neq('e.id', ':objectId'));
+        $qb->andWhere($qb->expr()->neq('e.id', ':objectId'));
         $qb->andWhere($qb->expr()->not(
             $qb->expr()->exists('SELECT d FROM DMK\\DuplicateCheckBundle\\Entity\\Duplicate d WHERE d.class = :class AND d.objectId = :objectId')
         ));
         $qb->setParameter('class', get_class($object));
-        $qb->setParameter('objectId', $metadata->getIdentifierValues($object));
+        $qb->setParameter('objectId', current($metadata->getIdentifierValues($object)));
 
         foreach ($this->config->getEnabledFields($class) as $name) {
             $this->walkQuery($qb, $name, $object);
@@ -123,7 +123,5 @@ abstract class AbstractORMAdapter implements AdapterInterface
             ->getFieldValue($entity, $fieldName);
 
         $this->walkWhereExpression($qb);
-
-        $qb->setParameter('param_' . $fieldName, $value);
     }
 }
