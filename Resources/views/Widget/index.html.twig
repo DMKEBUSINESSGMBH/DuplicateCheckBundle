@@ -1,0 +1,15 @@
+{% import 'OroDataGridBundle::macros.html.twig' as dataGrid %}
+
+<div class="widget-content">
+    {% set scope = entityClass~entityId~date().timestamp %}
+
+    <div class="container-fluid">
+        {% block content %}
+            {# gridName set from corresponding controllers #}
+            {{ dataGrid.renderGrid(
+                oro_datagrid_build_fullname(gridName, scope),
+                {object_class: entityClass, object_id: entityId}
+            ) }}
+        {% endblock %}
+    </div>
+</div>

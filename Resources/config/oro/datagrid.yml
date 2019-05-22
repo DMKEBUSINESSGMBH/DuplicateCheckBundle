@@ -14,8 +14,11 @@ datagrids:
                     - { table: DMKDuplicateCheckBundle:Duplicate, alias: duplicate }
                 where:
                     and:
-                        - duplicate.objectId = :objectId
-                        - duplicate.class = :class
+                        - duplicate.objectId = :object_id
+                        - duplicate.class = :object_class
+            bind_parameters:
+                - object_id
+                - object_class
         columns:
             objectName:
                 type: twig
