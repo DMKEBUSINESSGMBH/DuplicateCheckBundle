@@ -1,0 +1,13 @@
+placeholders:
+    placeholders:
+        change_history_block:
+            items:
+                duplicate_widget_link: ~
+
+    items:
+        duplicate_widget_link:
+            template: DMKDuplicateCheckBundle::duplicate_link.html.twig
+            applicable:
+                - "@dmk_duplicate_check.placeholder.duplicate_filter->isCheckEnabled($entity$)"
+                - "@oro_user.placeholder.filter->isUserApplicable()"
+            acl: dmk_duplicate_view

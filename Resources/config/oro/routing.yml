@@ -1,0 +1,3 @@
+dmk_duplicate_bundle:
+    resource: '@DMKDuplicateCheckBundle/Controller/WidgetController.php'
+    type: annotation

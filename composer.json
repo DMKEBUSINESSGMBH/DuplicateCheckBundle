@@ -1,6 +1,7 @@
 {
     "name": "dmk/duplicate-check-bundle",
     "description": "Finds duplicate in you CRM",
+    "license": "MIT",
     "type": "bundle",
     "autoload": {
         "psr-4": {

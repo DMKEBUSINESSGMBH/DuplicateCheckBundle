@@ -1,0 +1,24 @@
+{% import 'OroUIBundle::macros.html.twig' as UI%}
+
+{% if entity_class is empty %}
+    {% set entity_class = oro_class_name(entity, true) %}
+{% endif %}
+<li>
+    <a href="#" data-url="{{ path('dmk_duplicate_widget_index', {entity:entity_class, id:id}) }}"
+       title="{{ 'dmk.duplicatecheck.duplicates.title'|trans({'%item%': title}) }}"
+            {{ UI.renderWidgetDataAttributes({
+                'type': 'dialog',
+                'options': {
+                    'dialogOptions': {
+                        'allowMaximize': true,
+                        'allowMinimize': true,
+                        'dblclick': 'maximize',
+                        'maximizedHeightDecreaseBy': 'minimize-bar',
+                        'width': 1000,
+                        'title': 'dmk.duplicatecheck.duplicates.title'|trans({'%item%': title})
+                    }
+                }
+            }) }}>
+        {{ 'dmk.duplicatecheck.duplicate.entity_plural_label'|trans }}
+    </a>
+</li>
