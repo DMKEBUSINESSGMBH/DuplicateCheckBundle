@@ -81,7 +81,8 @@ class DuplicateCheckByRangeProcessor implements MessageProcessorInterface, Topic
             ;
 
             foreach ($entities as $entity) {
-                $this->facade->perform($entity);
+                $entity = $entity[0];
+                $this->facade->search($entity);
             }
 
             return true;

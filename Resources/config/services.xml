@@ -16,7 +16,7 @@
             <argument type="service" id="dmk_duplicate_check.finder" />
         </service>
         <service id="dmk_duplicate_check.async.duplicate_check_id_processor" class="DMK\DuplicateCheckBundle\Async\DuplicateCheckByIdProcessor">
-            <argument type="service" id="dmk_duplicate_check.finder" />
+            <argument type="service" id="dmk_duplicate_check.facade" />
             <argument type="service" id="doctrine.orm.entity_manager" />
             <argument type="service" id="oro_message_queue.job.runner" />
             <argument type="service" id="logger" />

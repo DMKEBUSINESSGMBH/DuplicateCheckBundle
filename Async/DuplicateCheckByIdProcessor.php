@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace DMK\DuplicateCheckBundle\Async;
 
 use DMK\DuplicateCheckBundle\Exception\InvalidArgumentException;
+use DMK\DuplicateCheckBundle\Facade;
 use DMK\DuplicateCheckBundle\FinderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
@@ -16,12 +17,30 @@ use Psr\Log\LoggerInterface;
 
 class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSubscriberInterface
 {
+    /**
+     * @var Facade
+     */
     private $finder;
+    /**
+     * @var JobRunner
+     */
     private $runner;
+    /**
+     * @var ObjectManager
+     */
     private $om;
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
-    public function __construct(FinderInterface $finder, ObjectManager $manager, JobRunner $runner, LoggerInterface $logger)
+    /**
+     * @param Facade $finder
+     * @param ObjectManager $manager
+     * @param JobRunner $runner
+     * @param LoggerInterface $logger
+     */
+    public function __construct(Facade $finder, ObjectManager $manager, JobRunner $runner, LoggerInterface $logger)
     {
         $this->finder = $finder;
         $this->om = $manager;
@@ -29,6 +48,9 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
         $this->logger = $logger;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function process(MessageInterface $message, SessionInterface $session)
     {
         try {
@@ -41,7 +63,7 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
 
         $body = JSON::decode($message->getBody());
 
-        $jobName =  sprintf('duplicate_check|%s', md5($body['class'], serialize($body['id'])));
+        $jobName =  sprintf('duplicate_check|%s', md5($body['class']. serialize($body['id'])));
 
         $this->runner->runUnique(
             $message->getMessageId(),
@@ -50,12 +72,17 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
                 $object = $this->om->find($body['class'], $body['id']);
 
                 $this->finder->search($object);
+
+                return true;
             }
         );
 
         return self::ACK;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public static function getSubscribedTopics()
     {
         return [Topics::TOPIC_CHECK_SINGLE];
