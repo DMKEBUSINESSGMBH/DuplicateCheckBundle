@@ -47,7 +47,7 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
             $message->getMessageId(),
             $jobName,
             function() use ($body) {
-                $object = $this->om->findOneBy($body['class'], $body['id']);
+                $object = $this->om->find($body['class'], $body['id']);
 
                 $this->finder->search($object);
             }
