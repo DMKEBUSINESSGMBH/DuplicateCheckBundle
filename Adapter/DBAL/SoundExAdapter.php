@@ -3,14 +3,19 @@ declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Adapter\DBAL;
 
+use Doctrine\ORM\QueryBuilder;
+
 class SoundExAdapter extends AbstractORMAdapter
 {
-    protected function getFunctionExpression(): string
+    protected function walkWhereExpression(QueryBuilder $qb)
     {
-        return 'SOUNDEX';
+        $qb->andWhere($qb->expr()->eq(
+            sprintf('SOUNDEX(e.%s)', $fieldName),
+            sprintf('SOUNDEX(:param_%s)', $fieldName)
+        ));
     }
 
-    protected function getWeight(object $item): float
+    protected function getWeight($item): float
     {
         return 0.2;
     }

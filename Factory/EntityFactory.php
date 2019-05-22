@@ -6,7 +6,9 @@ namespace DMK\DuplicateCheckBundle\Factory;
 
 use DMK\DuplicateCheckBundle\Entity\Duplicate;
 use DMK\DuplicateCheckBundle\Model\DuplicateInterface;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
+use Oro\Bundle\EntityBundle\Provider\EntityNameResolver;
 
 class EntityFactory implements FactoryInterface
 {
@@ -15,8 +17,14 @@ class EntityFactory implements FactoryInterface
      */
     private $em;
 
-    public function __construct(EntityManagerInterface $manager)
+    /**
+     * @var EntityNameResolver
+     */
+    private $resolver;
+
+    public function __construct(EntityNameResolver $resolver, EntityManagerInterface $manager)
     {
+        $this->resolver = $resolver;
         $this->em = $manager;
     }
 
@@ -25,6 +33,11 @@ class EntityFactory implements FactoryInterface
      */
     public function create($object, float $weight): DuplicateInterface
     {
-        return Duplicate::create($this->em, $object, $weight);
+        $metadata = $this->em->getClassMetadata(ClassUtils::getClass($object));
+        $ids = $metadata->getIdentifierValues($object);
+        $instance = new Duplicate($object, current($ids), $weight);
+        $instance->setName($this->resolver->getName($object));
+
+        return $instance;
     }
 }

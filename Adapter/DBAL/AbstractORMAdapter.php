@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Adapter\DBAL;
 
-
 use DMK\DuplicateCheckBundle\Adapter\AdapterInterface;
 use DMK\DuplicateCheckBundle\Factory\FactoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -12,7 +11,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigInterface;
-use Oro\Bundle\EntityConfigBundle\Provider\ConfigProvider;
+use DMK\DuplicateCheckBundle\Provider\ConfigProvider;
 
 abstract class AbstractORMAdapter implements AdapterInterface
 {
@@ -51,25 +50,27 @@ abstract class AbstractORMAdapter implements AdapterInterface
     public function process($object): iterable
     {
         $class = ClassUtils::getClass($object);
-        $configs = $this->config->getConfigs($class);
         /** @var ClassMetadata $metadata */
         $metadata = $this->registry->getManagerForClass($class)->getClassMetadata($class);
+
         /** @var QueryBuilder $qb */
         $qb = $this->registry->getRepository($class)
             ->createQueryBuilder('e');
+        $qb->andHaving($qb->expr()->neq('e.id', ':objectId'));
         $qb->andWhere($qb->expr()->not(
             $qb->expr()->exists('SELECT d FROM DMK\\DuplicateCheckBundle\\Entity\\Duplicate d WHERE d.class = :class AND d.objectId = :objectId')
         ));
         $qb->setParameter('class', get_class($object));
-        $qb->setParameter('id', $metadata->getIdentifierValues($object));
+        $qb->setParameter('objectId', $metadata->getIdentifierValues($object));
 
-        foreach ($configs as $config) {
-            $this->walkQuery($qb, $config, $object);
+        foreach ($this->config->getEnabledFields($class) as $name) {
+            $this->walkQuery($qb, $name, $object);
         }
 
         $result = $qb->getQuery()->iterate();
 
         foreach ($result as $item) {
+            $item = $item[0];
             yield $this->factory->create($item, $this->getWeight($item));
         }
     }
@@ -84,13 +85,12 @@ abstract class AbstractORMAdapter implements AdapterInterface
             return false;
         }
 
-        if (null === $em->getConfiguration()->getCustomStringFunction($this->getFunctionExpression())) {
+        return true;
+        if (!$this->config->isEntityEnabled(ClassUtils::getClass($object))) {
             return false;
         }
 
-        $config = $this->config->getConfig(ClassUtils::getClass($object), 'duplicate');
-
-        return $config['enabled'] ?? false;
+        return !empty($this->config->getEnabledFields(ClassUtils::getClass($object)));
     }
 
     /**
@@ -100,33 +100,29 @@ abstract class AbstractORMAdapter implements AdapterInterface
      *
      * @return float
      */
-    abstract protected function getWeight(object $item): float;
+    abstract protected function getWeight($item): float;
 
     /**
      * Returns the DQL Function expression.
      *
      * @return string
      */
-    abstract protected function getFunctionExpression(): string;
+    abstract protected function walkWhereExpression(QueryBuilder $qb);
 
     /**
      * This method will be called for each enabled field.
      *
      * @param QueryBuilder $qb
-     * @param ConfigInterface $config
+     * @param string $fieldName
      * @param object $entity
      */
-    protected function walkQuery(QueryBuilder $qb, ConfigInterface $config, object $entity): void
+    protected function walkQuery(QueryBuilder $qb, string $fieldName, $entity): void
     {
-        $fieldName = $config->getId()->getFieldName();
-        $value = $this->registry->getManagerForClass(get_class($config))
+        $value = $this->registry->getManagerForClass(get_class($entity))
             ->getClassMetadata(get_class($entity))
             ->getFieldValue($entity, $fieldName);
 
-        $qb->andWhere($qb->expr()->eq(
-            sprintf('%s(e.%s))', $this->getFunctionExpression(), $fieldName),
-            ':param_' . $fieldName
-        ));
+        $this->walkWhereExpression($qb);
 
         $qb->setParameter('param_' . $fieldName, $value);
     }

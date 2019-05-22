@@ -7,7 +7,7 @@ use DMK\DuplicateCheckBundle\Entity\BaseDuplicate;
 
 class ExtendDuplicate extends BaseDuplicate
 {
-    public function __construct(object $object, int $id, float $weight = 0.5)
+    public function __construct($object, int $id, float $weight = 0.5)
     {
         parent::__construct($object, $id, $weight);
     }

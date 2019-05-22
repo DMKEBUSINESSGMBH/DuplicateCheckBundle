@@ -2,7 +2,11 @@ dmk:
     duplicatecheck:
         module_label:           "Duplicate Check"
         duplicates:         "Duplicates"
-        duplicates.title:   "%item% duplicates"
+        duplicates.title:   "Duplicates"
+
+        action:
+            duplicate_link: '{0} No duplicates| {1} One Duplicate| ]1, INf] %count% Duplicates'
+
 
         duplicate:
             entity_label: 'Duplicate'

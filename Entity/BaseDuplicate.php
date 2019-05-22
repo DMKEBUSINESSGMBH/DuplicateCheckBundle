@@ -63,27 +63,6 @@ abstract class BaseDuplicate implements DuplicateInterface
     protected $createdAt;
 
     /**
-     * Creates a new entity from a object.
-     *
-     * @param EntityManagerInterface $em
-     * @param object $object
-     * @param float $weight
-     *
-     * @return self
-     */
-    static public function create(EntityManagerInterface $em, $object, $weight = 0.5): self
-    {
-        $ids = $em->getClassMetadata(ClassUtils::getClass($object))->getIdentifierValues($object);
-        $ids = current($ids);
-
-        return new static(
-            $object,
-            $ids,
-            $weight
-        );
-    }
-
-    /**
      * BaseDuplicate constructor.
      *
      * @param object $object
@@ -95,7 +74,7 @@ abstract class BaseDuplicate implements DuplicateInterface
         $this->weight = $weight * 100;
         $this->class = ClassUtils::getClass($object);
         $this->object = $object;
-        $this->id = $id;
+        $this->objectId = $id;
         $this->createdAt = new \DateTime();
     }
 

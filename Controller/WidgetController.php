@@ -2,6 +2,7 @@
 
 namespace DMK\DuplicateCheckBundle\Controller;
 
+use DMK\DuplicateCheckBundle\Entity\Duplicate;
 use Oro\Bundle\SecurityBundle\Annotation\Acl;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -33,6 +34,22 @@ class WidgetController extends Controller
             'gridName' => 'dmk-duplicates-grid',
             'entityClass' => $entity,
             'entityId' => $id
+        ];
+    }
+
+    /**
+     * @Template()
+     */
+    public function placeholderAction($entity)
+    {
+        $cnt = $this->getDoctrine()
+            ->getRepository(Duplicate::class)
+            ->getDuplicatesCnt($entity);
+
+        return [
+            'cnt' => $cnt,
+            'entity' => $entity,
+            'id' => $this->get('oro_entity.doctrine_helper')->getSingleEntityIdentifier($entity)
         ];
     }
 }

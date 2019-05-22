@@ -20,6 +20,7 @@ class DuplicateRepository extends EntityRepository
     {
         $id = $this->_em->getClassMetadata(ClassUtils::getClass($object))
             ->getIdentifierValues($object);
+        $id = current($id);
 
         $qb = $this->createQueryBuilder('d');
         $qb->where($qb->expr()->andX(
@@ -31,6 +32,31 @@ class DuplicateRepository extends EntityRepository
             'id' => $id
         ]);
 
-        return $qb->getQuery()->iterate();
+        foreach ($qb->getQuery()->iterate() as $row) {
+            yield $row[0];
+        }
+    }
+
+    /**
+     * Returns the number of duplicates which exists for the given object.
+     *
+     * @param object $object The object to check
+     *
+     * @return int
+     */
+    public function getDuplicatesCnt($object) : int
+    {
+        $id = $this->_em->getClassMetadata(ClassUtils::getClass($object))
+            ->getIdentifierValues($object);
+        $id = current($id);
+
+        $conn = $this->_em->getConnection();
+        $stmt = $conn->prepare('SELECT COUNT(*) FROM dmk_duplicate WHERE class = ? AND object_id = ?');
+        $stmt->execute([
+            ClassUtils::getClass($object),
+            $id
+        ]);
+
+        return $stmt->fetchColumn();
     }
 }

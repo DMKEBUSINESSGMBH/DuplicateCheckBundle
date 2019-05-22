@@ -1,0 +1,11 @@
+<container xmlns="http://symfony.com/schema/dic/services">
+    <services>
+        <service class="DMK\DuplicateCheckBundle\Adapter\DBAL\SoundExAdapter" id="dmk_duplicate_check.adapter_dbal.sound_ex_adapter">
+            <argument id="doctrine" type="service"/>
+            <argument type="service" id="dmk_duplicate_check.config_provider" />
+            <argument id="dmk_duplicate_check.factory.entity_factory" type="service"/>
+
+            <tag name="dmk_duplicate_check.adapter" />
+        </service>
+    </services>
+</container>

@@ -1,7 +1,12 @@
 <container xmlns="http://symfony.com/schema/dic/services">
     <services>
         <service id="dmk_duplicate_check.config_provider" class="DMK\DuplicateCheckBundle\Provider\ConfigProvider" public="false">
+            <argument type="service" id="oro_entity.doctrine_helper" />
             <argument type="service" id="oro_entity_config.config_manager" />
+        </service>
+        <service class="DMK\DuplicateCheckBundle\Factory\EntityFactory" id="dmk_duplicate_check.factory.entity_factory">
+            <argument id="oro_entity.entity_name_resolver" type="service" />
+            <argument id="doctrine.orm.entity_manager" type="service"/>
         </service>
         <service id="dmk_duplicate_check.finder" class="DMK\DuplicateCheckBundle\Finder">
             <argument type="collection" />
@@ -44,6 +49,7 @@
         </service>
         <service id="dmk_duplicate_check.search_class_command" class="DMK\DuplicateCheckBundle\Command\SearchByClassCommand">
             <argument type="service" id="oro_message_queue.client.message_producer" />
+            <argument type="service" id="oro_entity.entity_name_resolver" />
             <argument type="service" id="oro_entity.doctrine_helper" />
             <argument type="service" id="dmk_duplicate_check.facade" />
 

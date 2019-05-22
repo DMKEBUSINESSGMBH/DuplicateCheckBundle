@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace DMK\DuplicateCheckBundle\Provider;
 
 
+use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Bundle\EntityConfigBundle\Config\ConfigManager;
 
 class ConfigProvider
@@ -16,12 +17,19 @@ class ConfigProvider
     private $configManager;
 
     /**
+     * @var DoctrineHelper
+     */
+    private $doctrineHelper;
+
+    /**
      * ConfigProvider constructor.
      *
+     * @param DoctrineHelper $doctrineHelper
      * @param ConfigManager $configManager
      */
-    public function __construct(ConfigManager $configManager)
+    public function __construct(DoctrineHelper $doctrineHelper, ConfigManager $configManager)
     {
+        $this->doctrineHelper = $doctrineHelper;
         $this->configManager = $configManager;
     }
 
@@ -56,6 +64,15 @@ class ConfigProvider
         }
 
         return $this->configManager->getFieldConfig(self::SCOPE, $class, $field)->is('enabled');
+    }
+
+    public function getEnabledFields(string $class) : iterable
+    {
+        $metadata = $this->doctrineHelper->getEntityMetadataForClass($class);
+
+        return array_filter($metadata->getFieldNames(), function(string $name) use ($class) {
+            return $this->isFieldEnabled($class, $name);
+        });
     }
 
     /**
