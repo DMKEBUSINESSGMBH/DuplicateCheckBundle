@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\DependencyInjection\CompilerPass;
@@ -12,11 +13,19 @@ class EnterpriseCompilerPass implements CompilerPassInterface
         // To be filled.
     ];
 
-    public function process(ContainerBuilder $container)
+    /**
+     * @param ContainerBuilder $container
+     */
+    public function process(ContainerBuilder $container): void
     {
+        /**
+         * @todo fill SERVICE_IDS
+         */
+
+        /*
         foreach (self::SERVICE_IDS as $id) {
             $container->findDefinition($id)->addTag('dmk_duplicate_check.adapter');
         }
+        */
     }
-
 }

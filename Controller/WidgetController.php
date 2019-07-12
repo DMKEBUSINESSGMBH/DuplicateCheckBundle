@@ -27,18 +27,27 @@ class WidgetController extends Controller
      *     permission="VIEW",
      *     id="dmk_duplicate_index"
      * )
+     *
+     * @param object $entity
+     * @param int    $id
+     *
+     * @return array
      */
-    public function indexAction($entity, $id)
+    public function indexAction($entity, int $id)
     {
         return [
             'gridName' => 'dmk-duplicates-grid',
             'entityClass' => $entity,
-            'entityId' => $id
+            'entityId' => $id,
         ];
     }
 
     /**
      * @Template()
+     *
+     * @param object $entity
+     *
+     * @return array
      */
     public function placeholderAction($entity)
     {
@@ -49,7 +58,7 @@ class WidgetController extends Controller
         return [
             'cnt' => $cnt,
             'entity' => $entity,
-            'id' => $this->get('oro_entity.doctrine_helper')->getSingleEntityIdentifier($entity)
+            'id' => $this->get('oro_entity.doctrine_helper')->getSingleEntityIdentifier($entity),
         ];
     }
 }

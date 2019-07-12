@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Datagrid;
-
 
 use DMK\DuplicateCheckBundle\Provider\ConfigProvider;
 use Oro\Bundle\DataGridBundle\Datasource\ResultRecord;
@@ -10,8 +10,14 @@ use Oro\Bundle\EntityBundle\Provider\EntityClassNameProviderInterface;
 
 final class EntityTypeProvider
 {
+    /**
+     * @var EntityClassNameProviderInterface
+     */
     private $entityClassNameProvider;
 
+    /**
+     * @var ConfigProvider
+     */
     private $configProvider;
 
     public function __construct(EntityClassNameProviderInterface $provider, ConfigProvider $configProvider)
@@ -45,7 +51,7 @@ final class EntityTypeProvider
         $classNames = $this->configProvider->getAllEnabledEntities();
         foreach ($classNames as $className) {
             $label = $this->entityClassNameProvider->getEntityClassName($className);
-            if ($label) {
+            if (is_string($label)) {
                 $result[$label] = $className;
             }
         }

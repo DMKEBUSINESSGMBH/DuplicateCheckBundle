@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Adapter\DBAL;
@@ -6,11 +7,9 @@ namespace DMK\DuplicateCheckBundle\Adapter\DBAL;
 use DMK\DuplicateCheckBundle\Adapter\AdapterInterface;
 use DMK\DuplicateCheckBundle\Factory\FactoryInterface;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\QueryBuilder;
-use Oro\Bundle\EntityConfigBundle\Config\ConfigInterface;
 use DMK\DuplicateCheckBundle\Provider\ConfigProvider;
 
 abstract class AbstractORMAdapter implements AdapterInterface
@@ -33,8 +32,8 @@ abstract class AbstractORMAdapter implements AdapterInterface
     /**
      * AbstractORMAdapter constructor.
      *
-     * @param ManagerRegistry $registry
-     * @param ConfigProvider $config
+     * @param ManagerRegistry  $registry
+     * @param ConfigProvider   $config
      * @param FactoryInterface $factory
      */
     public function __construct(ManagerRegistry $registry, ConfigProvider $config, FactoryInterface $factory)
@@ -49,9 +48,9 @@ abstract class AbstractORMAdapter implements AdapterInterface
      */
     public function process($object): iterable
     {
-        $class = ClassUtils::getClass($object);
         /** @var ClassMetadata $metadata */
-        $metadata = $this->registry->getManagerForClass($class)->getClassMetadata($class);
+        $metadata = $this->registry->getManagerForClass(get_class($object))->getClassMetadata(get_class($object));
+        $class = $metadata->getName();
 
         /** @var QueryBuilder $qb */
         $qb = $this->registry->getRepository($class)
@@ -81,16 +80,15 @@ abstract class AbstractORMAdapter implements AdapterInterface
     public function supports($object): bool
     {
         /** @var EntityManager $em */
-        if (null === $em = $this->registry->getManagerForClass(ClassUtils::getClass($object))) {
+        if (null === $em = $this->registry->getManagerForClass(get_class($object))) {
             return false;
         }
 
-        return true;
-        if (!$this->config->isEntityEnabled(ClassUtils::getClass($object))) {
+        if (!$this->config->isEntityEnabled(get_class($object))) {
             return false;
         }
 
-        return !empty($this->config->getEnabledFields(ClassUtils::getClass($object)));
+        return 0 !== count($this->config->getEnabledFields(get_class($object)));
     }
 
     /**
@@ -113,8 +111,8 @@ abstract class AbstractORMAdapter implements AdapterInterface
      * This method will be called for each enabled field.
      *
      * @param QueryBuilder $qb
-     * @param string $fieldName
-     * @param object $entity
+     * @param string       $fieldName
+     * @param object       $entity
      */
     protected function walkQuery(QueryBuilder $qb, string $fieldName, $entity): void
     {

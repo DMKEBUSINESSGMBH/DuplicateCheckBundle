@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Async;
@@ -19,14 +20,32 @@ class DuplicateCheckByClassProcessor implements MessageProcessorInterface, Topic
 {
     const BATCH_SIZE = 1000;
 
+    /**
+     * @var RegistryInterface
+     */
     private $registry;
 
+    /**
+     * @var MessageProducerInterface
+     */
     private $producer;
 
+    /**
+     * @var JobRunner
+     */
     private $runner;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * @param RegistryInterface        $registry
+     * @param MessageProducerInterface $producer
+     * @param JobRunner                $runner
+     * @param LoggerInterface          $logger
+     */
     public function __construct(RegistryInterface $registry, MessageProducerInterface $producer, JobRunner $runner, LoggerInterface $logger)
     {
         $this->registry = $registry;
@@ -35,6 +54,12 @@ class DuplicateCheckByClassProcessor implements MessageProcessorInterface, Topic
         $this->logger = $logger;
     }
 
+    /**
+     * @param MessageInterface $message
+     * @param SessionInterface $session
+     *
+     * @return string
+     */
     public function process(MessageInterface $message, SessionInterface $session)
     {
         $body = JSON::decode($message->getBody());
@@ -42,26 +67,26 @@ class DuplicateCheckByClassProcessor implements MessageProcessorInterface, Topic
         $result = $this->runner->runUnique(
             $message->getMessageId(),
             sprintf('%s:%s', Topics::TOPIC_CHECK_CLASS, $body['entityClass']),
-            function(JobRunner $jobRunner) use ($body) {
-            /** @var EntityManager $em */
-            if (! $em = $this->registry->getManagerForClass($body['entityClass'])) {
-                $this->logger->error(
+            function (JobRunner $jobRunner) use ($body) {
+                /** @var EntityManager $em */
+                if (is_null($em = $this->registry->getManagerForClass($body['entityClass']))) {
+                    $this->logger->error(
                     sprintf('Entity manager is not defined for class: "%s"', $body['entityClass'])
                 );
 
-                return false;
-            }
+                    return false;
+                }
 
-            $entityCount = $em->getRepository($body['entityClass'])
+                $entityCount = $em->getRepository($body['entityClass'])
                 ->createQueryBuilder('entity')
                 ->select('COUNT(entity)')
                 ->getQuery()
                 ->getSingleScalarResult()
             ;
 
-            $batches = (int) ceil($entityCount / self::BATCH_SIZE);
-            for ($i = 0; $i < $batches; $i++) {
-                $jobRunner->createDelayed(
+                $batches = (int) ceil($entityCount / self::BATCH_SIZE);
+                for ($i = 0; $i < $batches; ++$i) {
+                    $jobRunner->createDelayed(
                     sprintf('%s:%s:%s', Topics::TOPIC_CHECK_RANGE, $body['entityClass'], $i),
                     function (JobRunner $jobRunner, Job $child) use ($i, $body) {
                         $this->producer->send(Topics::TOPIC_CHECK_RANGE, [
@@ -72,17 +97,19 @@ class DuplicateCheckByClassProcessor implements MessageProcessorInterface, Topic
                         ]);
                     }
                 );
-            }
+                }
 
-            return true;
-        });
+                return true;
+            });
 
-        return $result ? self::ACK : self::REJECT;
+        return null !== $result ? self::ACK : self::REJECT;
     }
 
+    /**
+     * @return array
+     */
     public static function getSubscribedTopics()
     {
         return [Topics::TOPIC_CHECK_CLASS];
     }
-
 }

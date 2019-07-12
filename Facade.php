@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle;
@@ -24,9 +25,9 @@ final class Facade
 
     /**
      * Facade constructor.
-     * 
+     *
      * @param EntityManagerInterface $manager
-     * @param FinderInterface $finder
+     * @param FinderInterface        $finder
      */
     public function __construct(EntityManagerInterface $manager, FinderInterface $finder)
     {

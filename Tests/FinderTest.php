@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Tests;
@@ -14,7 +15,7 @@ class FinderTest extends TestCase
     {
         $this->adapter = $this->prophesize(AdapterInterface::class);
         $this->finder = new Finder([
-            $this->adapter->reveal()
+            $this->adapter->reveal(),
         ]);
     }
 

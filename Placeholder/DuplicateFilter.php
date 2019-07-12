@@ -3,10 +3,12 @@
 namespace DMK\DuplicateCheckBundle\Placeholder;
 
 use DMK\DuplicateCheckBundle\Provider\ConfigProvider;
-use Doctrine\Common\Util\ClassUtils;
 
 class DuplicateFilter
 {
+    /**
+     * @var ConfigProvider
+     */
     private $config;
 
     public function __construct(ConfigProvider $provider)
@@ -14,9 +16,14 @@ class DuplicateFilter
         $this->config = $provider;
     }
 
-    public function isCheckEnabled($entity)
+    /**
+     * @param object $entity
+     *
+     * @return bool
+     */
+    public function isCheckEnabled($entity): bool
     {
-        $class = ClassUtils::getClass($entity);
+        $class = get_class($entity);
 
         return $this->config->isEntityEnabled($class);
     }

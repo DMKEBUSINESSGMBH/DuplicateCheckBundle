@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Adapter\DBAL;
@@ -7,6 +8,11 @@ use Doctrine\ORM\QueryBuilder;
 
 class LevenshteinAdapter extends AbstractORMAdapter
 {
+    /**
+     * @param object $object
+     *
+     * @return bool
+     */
     public function supports($object): bool
     {
         if (false === parent::supports($object)) {
@@ -27,6 +33,11 @@ class LevenshteinAdapter extends AbstractORMAdapter
         return $check;
     }
 
+    /**
+     * @param QueryBuilder $qb
+     *
+     * @return string|void
+     */
     protected function walkWhereExpression(QueryBuilder $qb)
     {
         $qb->andWhere($qb->expr()->eq(
@@ -35,6 +46,11 @@ class LevenshteinAdapter extends AbstractORMAdapter
         ));
     }
 
+    /**
+     * @param object $item
+     *
+     * @return float
+     */
     protected function getWeight($item): float
     {
         return 0.4;

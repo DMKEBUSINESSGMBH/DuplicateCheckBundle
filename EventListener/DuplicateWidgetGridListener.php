@@ -8,20 +8,23 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class DuplicateWidgetGridListener implements EventSubscriberInterface
 {
-    const GRID_PARAM_CLASS      = 'object_class';
-    const GRID_PARAM_OBJECT_ID  = 'object_id';
+    const GRID_PARAM_CLASS = 'object_class';
+    const GRID_PARAM_OBJECT_ID = 'object_id';
 
+    /**
+     * @return array
+     */
     public static function getSubscribedEvents()
     {
         return [
-            'oro_datagrid.datagrid.build.after.dmk-duplicates-grid' => 'onBuildAfter'
+            'oro_datagrid.datagrid.build.after.dmk-duplicates-grid' => 'onBuildAfter',
         ];
     }
 
     /**
      * @param BuildAfter $event
      */
-    public function onBuildAfter(BuildAfter $event)
+    public function onBuildAfter(BuildAfter $event): void
     {
         $datagrid = $event->getDatagrid();
         $datasource = $datagrid->getDatasource();

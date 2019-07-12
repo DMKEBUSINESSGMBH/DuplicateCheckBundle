@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Async;
 
 use DMK\DuplicateCheckBundle\Exception\InvalidArgumentException;
 use DMK\DuplicateCheckBundle\Facade;
-use DMK\DuplicateCheckBundle\FinderInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
@@ -35,9 +35,9 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
     private $logger;
 
     /**
-     * @param Facade $finder
-     * @param ObjectManager $manager
-     * @param JobRunner $runner
+     * @param Facade          $finder
+     * @param ObjectManager   $manager
+     * @param JobRunner       $runner
      * @param LoggerInterface $logger
      */
     public function __construct(Facade $finder, ObjectManager $manager, JobRunner $runner, LoggerInterface $logger)
@@ -49,9 +49,9 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function process(MessageInterface $message, SessionInterface $session)
+    public function process(MessageInterface $message, SessionInterface $session): string
     {
         try {
             $this->assertEnvironment($message);
@@ -63,12 +63,12 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
 
         $body = JSON::decode($message->getBody());
 
-        $jobName =  sprintf('duplicate_check|%s', md5($body['class']. serialize($body['id'])));
+        $jobName = sprintf('duplicate_check|%s', md5($body['class'].serialize($body['id'])));
 
         $this->runner->runUnique(
             $message->getMessageId(),
             $jobName,
-            function() use ($body) {
+            function () use ($body) {
                 $object = $this->om->find($body['class'], $body['id']);
 
                 $this->finder->search($object);
@@ -81,14 +81,17 @@ class DuplicateCheckByIdProcessor implements MessageProcessorInterface, TopicSub
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public static function getSubscribedTopics()
     {
         return [Topics::TOPIC_CHECK_SINGLE];
     }
 
-    private function assertEnvironment(MessageInterface $message)
+    /**
+     * @param MessageInterface $message
+     */
+    private function assertEnvironment(MessageInterface $message): void
     {
         $body = json_decode($message->getBody(), true);
 

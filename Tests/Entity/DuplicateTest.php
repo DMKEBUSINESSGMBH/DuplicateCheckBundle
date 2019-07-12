@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Tests\Entity;
@@ -13,7 +14,6 @@ class DuplicateTest extends TestCase
         $this->original = new \stdClass();
         $this->object = new Duplicate($this->original, 1, 0.8);
     }
-
 
     public function test_class()
     {
