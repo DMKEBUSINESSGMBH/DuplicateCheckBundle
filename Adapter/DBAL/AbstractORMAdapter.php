@@ -105,9 +105,11 @@ abstract class AbstractORMAdapter implements AdapterInterface
     /**
      * Returns the DQL Function expression.
      *
-     * @return string
+     * @param QueryBuilder $qb
+     * @param string $fieldName
+     * @param mixed $value
      */
-    abstract protected function walkWhereExpression(QueryBuilder $qb);
+    abstract protected function walkWhereExpression(QueryBuilder $qb, string $fieldName, $value): void;
 
     /**
      * This method will be called for each enabled field.
@@ -122,6 +124,6 @@ abstract class AbstractORMAdapter implements AdapterInterface
             ->getClassMetadata(get_class($entity))
             ->getFieldValue($entity, $fieldName);
 
-        $this->walkWhereExpression($qb);
+        $this->walkWhereExpression($qb, $fieldName, $value);
     }
 }

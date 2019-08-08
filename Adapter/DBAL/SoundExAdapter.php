@@ -7,7 +7,7 @@ use Doctrine\ORM\QueryBuilder;
 
 class SoundExAdapter extends AbstractORMAdapter
 {
-    protected function walkWhereExpression(QueryBuilder $qb)
+    protected function walkWhereExpression(QueryBuilder $qb, string $fieldName, $value): void
     {
         $qb->andWhere($qb->expr()->eq(
             sprintf('SOUNDEX(e.%s)', $fieldName),

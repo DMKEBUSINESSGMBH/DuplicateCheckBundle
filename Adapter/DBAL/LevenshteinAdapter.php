@@ -27,7 +27,7 @@ class LevenshteinAdapter extends AbstractORMAdapter
         return $check;
     }
 
-    protected function walkWhereExpression(QueryBuilder $qb)
+    protected function walkWhereExpression(QueryBuilder $qb, string $fieldName, $value): void
     {
         $qb->andWhere($qb->expr()->eq(
             sprintf('levenshtein(e.%s, :param_%s)', $fieldName, $fieldName),
