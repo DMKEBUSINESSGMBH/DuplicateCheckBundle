@@ -82,7 +82,7 @@ HELP
             $class
         ));
 
-        $duplicates = $this->facade->perform($entity);
+        $duplicates = $this->facade->search($entity);
 
         $output->writeln(sprintf(
             'Found <info>%d</info> duplicates for the given entity.',
