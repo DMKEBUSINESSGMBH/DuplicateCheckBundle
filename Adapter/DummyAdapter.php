@@ -1,8 +1,8 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Adapter;
-
 
 class DummyAdapter implements AdapterInterface
 {
@@ -21,5 +21,4 @@ class DummyAdapter implements AdapterInterface
     {
         return true;
     }
-
 }

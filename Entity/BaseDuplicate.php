@@ -1,11 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Entity;
 
 use DMK\DuplicateCheckBundle\Model\DuplicateInterface;
-use Doctrine\Common\Util\ClassUtils;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -16,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 abstract class BaseDuplicate implements DuplicateInterface
 {
     /**
-     * @var integer
+     * @var int
      *
      * @ORM\Id @ORM\Column(type="integer", name="id", options={"unsigned":true}) @ORM\GeneratedValue
      */
@@ -44,14 +43,14 @@ abstract class BaseDuplicate implements DuplicateInterface
     protected $name;
 
     /**
-     * @var string
+     * @var int
      *
      * @ORM\Column(type="integer", name="object_id")
      */
     protected $objectId;
 
     /**
-     * @var object|null
+     * @var object
      */
     protected $object;
 
@@ -66,15 +65,15 @@ abstract class BaseDuplicate implements DuplicateInterface
      * BaseDuplicate constructor.
      *
      * @param object $object
-     * @param int $id
-     * @param float $weight
+     * @param int    $objectId
+     * @param float  $weight
      */
-    public function __construct($object, int $id, float $weight = 0.5)
+    public function __construct($object, int $objectId, float $weight = 0.5)
     {
         $this->weight = $weight * 100;
-        $this->class = ClassUtils::getClass($object);
+        $this->class = get_class($object);
         $this->object = $object;
-        $this->objectId = $id;
+        $this->objectId = $objectId;
         $this->createdAt = new \DateTime();
     }
 
@@ -83,7 +82,7 @@ abstract class BaseDuplicate implements DuplicateInterface
      *
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -112,11 +111,10 @@ abstract class BaseDuplicate implements DuplicateInterface
         return $this->object;
     }
 
-
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -124,7 +122,7 @@ abstract class BaseDuplicate implements DuplicateInterface
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name): void
     {
         $this->name = $name;
     }
@@ -133,6 +131,6 @@ abstract class BaseDuplicate implements DuplicateInterface
     {
         $em = $args->getEntityManager();
 
-        $this->object = $em->find($this->class, $this->id);
+        $this->object = $em->find($this->class, $this->objectId);
     }
 }

@@ -23,19 +23,21 @@ class DMKDuplicateCheckBundleInstaller implements Installation
     /**
      * {@inheritdoc}
      */
-    public function up(Schema $schema, QueryBag $queries)
+    public function up(Schema $schema, QueryBag $queries): void
     {
-        /** Tables generation **/
+        /* Tables generation **/
         $this->createDmkDuplicateTable($schema);
 
-        /** Foreign keys generation **/
+        /* Foreign keys generation **/
         $this->addDmkDuplicateForeignKeys($schema);
     }
 
     /**
-     * Create dmk_duplicate table
+     * Create dmk_duplicate table.
      *
      * @param Schema $schema
+     *
+     * @return void
      */
     protected function createDmkDuplicateTable(Schema $schema)
     {
@@ -56,6 +58,10 @@ class DMKDuplicateCheckBundleInstaller implements Installation
      * Add dmk_duplicate foreign keys.
      *
      * @param Schema $schema
+     *
+     * @return void
+     *
+     * @throws \Doctrine\DBAL\Schema\SchemaException
      */
     protected function addDmkDuplicateForeignKeys(Schema $schema)
     {

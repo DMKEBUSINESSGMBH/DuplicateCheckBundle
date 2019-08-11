@@ -1,12 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Factory;
 
-
 use DMK\DuplicateCheckBundle\Entity\Duplicate;
 use DMK\DuplicateCheckBundle\Model\DuplicateInterface;
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Oro\Bundle\EntityBundle\Provider\EntityNameResolver;
 
@@ -33,7 +32,7 @@ class EntityFactory implements FactoryInterface
      */
     public function create($object, float $weight): DuplicateInterface
     {
-        $metadata = $this->em->getClassMetadata(ClassUtils::getClass($object));
+        $metadata = $this->em->getClassMetadata(get_class($object));
         $ids = $metadata->getIdentifierValues($object);
         $instance = new Duplicate($object, current($ids), $weight);
         $instance->setName($this->resolver->getName($object));

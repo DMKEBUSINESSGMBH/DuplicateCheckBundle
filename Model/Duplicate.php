@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Model;
@@ -19,7 +20,7 @@ class Duplicate implements DuplicateInterface
      * Duplicate constructor.
      *
      * @param object $object
-     * @param float $weight
+     * @param float  $weight
      */
     public function __construct($object, float $weight = 0.5)
     {
@@ -50,5 +51,4 @@ class Duplicate implements DuplicateInterface
     {
         return get_class($this->object);
     }
-
 }

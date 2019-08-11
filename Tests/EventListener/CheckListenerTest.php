@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Tests\EventListener;
@@ -56,7 +57,7 @@ class CheckListenerTest extends TestCase
 
     public function test_post_flush()
     {
-        $object = new \stdClass();;
+        $object = new \stdClass();
         $em = $this->prophesize(EntityManagerInterface::class);
         $uwo = $this->prophesize(UnitOfWork::class);
         $em->getUnitOfWork()->willReturn($uwo->reveal());
@@ -74,8 +75,8 @@ class CheckListenerTest extends TestCase
         $em->getClassMetadata('stdClass')->willReturn($metadata->reveal());
 
         $this->producer->send(Topics::TOPIC_CHECK_SINGLE, [
-            'id' =>  ['id' => 1],
-            'class' => 'stdClass'
+            'id' => ['id' => 1],
+            'class' => 'stdClass',
         ])->shouldBeCalled();
 
         $args = new PostFlushEventArgs($em->reveal());

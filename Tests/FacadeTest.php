@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Tests;
 
 use DMK\DuplicateCheckBundle\Facade;
 use DMK\DuplicateCheckBundle\FinderInterface;
-use DMK\DuplicateCheckBundle\Model\Duplicate;
 use DMK\DuplicateCheckBundle\Model\DuplicateInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\TestCase;
@@ -13,6 +13,19 @@ use Prophecy\Argument;
 
 class FacadeTest extends TestCase
 {
+    /**
+     * @var \Prophecy\Prophecy\ObjectProphecy
+     */
+    private $em;
+    /**
+     * @var \Prophecy\Prophecy\ObjectProphecy
+     */
+    private $finder;
+    /**
+     * @var Facade
+     */
+    private $facade;
+
     protected function setup()
     {
         $this->em = $this->prophesize(EntityManagerInterface::class);
@@ -22,7 +35,6 @@ class FacadeTest extends TestCase
             $this->em->reveal(),
             $this->finder->reveal()
         );
-
     }
 
     public function testProcess()

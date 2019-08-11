@@ -1,11 +1,11 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Async;
 
 use DMK\DuplicateCheckBundle\Facade;
 use Doctrine\ORM\EntityManager;
-use Oro\Component\MessageQueue\Client\MessageProducerInterface;
 use Oro\Component\MessageQueue\Client\TopicSubscriberInterface;
 use Oro\Component\MessageQueue\Consumption\MessageProcessorInterface;
 use Oro\Component\MessageQueue\Job\JobRunner;
@@ -17,12 +17,24 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class DuplicateCheckByRangeProcessor implements MessageProcessorInterface, TopicSubscriberInterface
 {
+    /**
+     * @var RegistryInterface
+     */
     private $registry;
 
+    /**
+     * @var JobRunner
+     */
     private $runner;
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
 
+    /**
+     * @var Facade
+     */
     private $facade;
 
     public function __construct(
@@ -30,27 +42,29 @@ class DuplicateCheckByRangeProcessor implements MessageProcessorInterface, Topic
         RegistryInterface $registry,
         JobRunner $runner,
         LoggerInterface $logger
-    )
-    {
+    ) {
         $this->registry = $registry;
         $this->facade = $facade;
         $this->runner = $runner;
         $this->logger = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function process(MessageInterface $message, SessionInterface $session)
     {
         $payload = JSON::decode($message->getBody());
 
         $result = $this->runner->runDelayed($payload['jobId'], function () use ($payload) {
-            if (! isset($payload['entityClass'], $payload['offset'], $payload['limit'])) {
+            if (!isset($payload['entityClass'], $payload['offset'], $payload['limit'])) {
                 $this->logger->error('Message is not valid.');
 
                 return false;
             }
 
             /** @var EntityManager $em */
-            if (! $em = $this->registry->getManagerForClass($payload['entityClass'])) {
+            if (is_null($em = $this->registry->getManagerForClass($payload['entityClass']))) {
                 $this->logger->error(
                     sprintf('Entity manager is not defined for class: "%s"', $payload['entityClass'])
                 );
@@ -88,12 +102,14 @@ class DuplicateCheckByRangeProcessor implements MessageProcessorInterface, Topic
             return true;
         });
 
-        return $result ? self::ACK : self::REJECT;
+        return null !== $result && false !== $result ? self::ACK : self::REJECT;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedTopics()
     {
         return [Topics::TOPIC_CHECK_RANGE];
     }
-
 }

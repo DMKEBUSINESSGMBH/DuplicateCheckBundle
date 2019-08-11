@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Entity;
@@ -20,8 +21,7 @@ use Oro\Bundle\OrganizationBundle\Entity\Ownership\OrganizationAwareTrait;
  *     }
  * })
  */
-class Duplicate extends ExtendDuplicate
-    implements OrganizationAwareInterface
+class Duplicate extends ExtendDuplicate implements OrganizationAwareInterface
 {
     use OrganizationAwareTrait;
 }
