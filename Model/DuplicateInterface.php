@@ -29,11 +29,4 @@ interface DuplicateInterface
      * @return string
      */
     public function getClass(): string;
-
-    /**
-     * Returns a string representation of the underlining object.
-     *
-     * @return string
-     */
-    public function getName(): string;
 }

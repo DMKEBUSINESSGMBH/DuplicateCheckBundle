@@ -1,29 +1,10 @@
-includes:
-    - vendor/phpstan/phpstan-deprecation-rules/rules.neon
-    - vendor/phpstan/phpstan-phpunit/extension.neon
-    - vendor/phpstan/phpstan-phpunit/rules.neon
-    - vendor/phpstan/phpstan-strict-rules/rules.neon
-    - vendor/jangregor/phpstan-prophecy/src/extension.neon
-    - vendor/phpstan/phpstan-symfony/extension.neon
-    - vendor/phpstan/phpstan-doctrine/extension.neon
-
 parameters:
     level: max
+    excludes_analyse:
+        - "%currentWorkingDirectory%/Tests"
+        - "%currentWorkingDirectory%/vendor"
+        - "%currentWorkingDirectory%/components"
     paths:
-        - "%currentWorkingDirectory%/Adapter"
-        - "%currentWorkingDirectory%/Async"
-        - "%currentWorkingDirectory%/Command"
-        - "%currentWorkingDirectory%/Controller"
-        - "%currentWorkingDirectory%/Datagrid"
-        - "%currentWorkingDirectory%/DependencyInjection"
-        - "%currentWorkingDirectory%/Entity"
-        - "%currentWorkingDirectory%/EventListener"
-        - "%currentWorkingDirectory%/Exception"
-        - "%currentWorkingDirectory%/Factory"
-        - "%currentWorkingDirectory%/Migrations"
-        - "%currentWorkingDirectory%/Model"
-        - "%currentWorkingDirectory%/Placeholder"
-        - "%currentWorkingDirectory%/Provider"
-        - "%currentWorkingDirectory%/Repository"
+        - "%currentWorkingDirectory%"
 
 
