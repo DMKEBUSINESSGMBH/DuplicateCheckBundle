@@ -1,0 +1,33 @@
+language: php
+
+sudo: false
+
+matrix:
+    fast_finish: true
+    include:
+        - php: 7.1
+          env:
+              ORO_VERSION=2.6
+        - php: 7.1
+          env: ORO_VERSION=3.1
+        - php: 7.2
+          env: ORO_VERSION=3.1
+        - php: 7.3
+          env: ORO_VERSION=3.1
+
+
+cache:
+    directories:
+        - $HOME/.composer/cache
+
+install:
+    -  php -d memory_limit=-1 $(phpenv which composer) update --prefer-dist
+
+before_script:
+    - composer self-update
+    - phpenv config-rm xdebug.ini || true
+    - composer require oro/platform=$ORO_VERSION
+    - git checkout composer.json
+
+script:
+    - vendor/bin/phpunit
