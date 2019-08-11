@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Command;
@@ -7,7 +8,6 @@ use DMK\DuplicateCheckBundle\Async\Topics;
 use DMK\DuplicateCheckBundle\Facade;
 use Oro\Bundle\EntityBundle\ORM\DoctrineHelper;
 use Oro\Component\MessageQueue\Client\MessageProducerInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,8 +16,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SearchCommand extends Command
 {
+    /**
+     * @var MessageProducerInterface
+     */
     private $producer;
+
+    /**
+     * @var DoctrineHelper
+     */
     private $helper;
+
+    /**
+     * @var Facade
+     */
     private $facade;
 
     public function __construct(MessageProducerInterface $producer, Facade $facade, DoctrineHelper $doctrineHelper)
@@ -29,7 +40,10 @@ class SearchCommand extends Command
         parent::__construct(null);
     }
 
-    protected function configure()
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure(): void
     {
         $this->setName('dmk:duplicate-check:search');
         $this->addOption('scheduled', null, InputOption::VALUE_NONE, 'Performs the check asynchronous');
@@ -42,6 +56,9 @@ HELP
 );
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $class = $input->getArgument('class');
@@ -56,6 +73,7 @@ HELP
             ]);
 
             $output->writeln(sprintf('Scheduled duplicate check for entity "%s"', $class));
+
             return 0;
         }
 

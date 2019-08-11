@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\EventListener;
@@ -6,7 +7,6 @@ namespace DMK\DuplicateCheckBundle\EventListener;
 use DMK\DuplicateCheckBundle\Async\Topics;
 use DMK\DuplicateCheckBundle\Provider\ConfigProvider;
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\Event\PostFlushEventArgs;
 use Doctrine\ORM\Events;
@@ -43,17 +43,20 @@ class CheckListener implements EventSubscriber
     {
         return [
             Events::onFlush,
-            Events::postFlush
+            Events::postFlush,
         ];
     }
 
-    public function onFlush(OnFlushEventArgs $args)
+    /**
+     * @param OnFlushEventArgs $args
+     */
+    public function onFlush(OnFlushEventArgs $args): void
     {
         $em = $args->getEntityManager();
         $uow = $em->getUnitOfWork();
 
         foreach ($uow->getScheduledEntityInsertions() as $entity) {
-            if (!$this->provider->isEntityEnabled(ClassUtils::getClass($entity))) {
+            if (!$this->provider->isEntityEnabled(get_class($entity))) {
                 continue;
             }
 
@@ -61,7 +64,7 @@ class CheckListener implements EventSubscriber
         }
 
         foreach ($uow->getScheduledEntityUpdates() as $entity) {
-            if (!$this->provider->isEntityEnabled(ClassUtils::getClass($entity))) {
+            if (!$this->provider->isEntityEnabled(get_class($entity))) {
                 continue;
             }
 
@@ -69,15 +72,20 @@ class CheckListener implements EventSubscriber
         }
     }
 
-    public function postFlush(PostFlushEventArgs $args)
+    /**
+     * @param PostFlushEventArgs $args
+     *
+     * @throws \Oro\Component\MessageQueue\Transport\Exception\Exception
+     */
+    public function postFlush(PostFlushEventArgs $args): void
     {
         foreach ($this->objects as $object) {
-            $class = ClassUtils::getClass($object);
+            $class = get_class($object);
             $metadata = $args->getEntityManager()->getClassMetadata($class);
 
             $this->producer->send(Topics::TOPIC_CHECK_SINGLE, [
                 'class' => $class,
-                'id' => $metadata->getIdentifierValues($object)
+                'id' => $metadata->getIdentifierValues($object),
             ]);
         }
     }

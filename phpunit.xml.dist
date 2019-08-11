@@ -11,12 +11,17 @@
 
     <testsuites>
         <testsuite name="DuplicateCheck Test Suite">
-            <directory>./tests/</directory>
+            <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
     <filter>
         <whitelist>
-            <directory>src/**</directory>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Tests</directory>
+                <directory>./vendor</directory>
+                <directory>./components</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Model;
@@ -28,4 +29,11 @@ interface DuplicateInterface
      * @return string
      */
     public function getClass(): string;
+
+    /**
+     * Returns a string representation of the underlining object.
+     *
+     * @return string
+     */
+    public function getName(): string;
 }

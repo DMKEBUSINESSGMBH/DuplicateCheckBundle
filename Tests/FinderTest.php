@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace DMK\DuplicateCheckBundle\Tests;
@@ -10,11 +11,20 @@ use PHPUnit\Framework\TestCase;
 
 class FinderTest extends TestCase
 {
+    /**
+     * @var \Prophecy\Prophecy\ObjectProphecy
+     */
+    private $adapter;
+    /**
+     * @var Finder
+     */
+    private $finder;
+
     protected function setup()
     {
         $this->adapter = $this->prophesize(AdapterInterface::class);
         $this->finder = new Finder([
-            $this->adapter->reveal()
+            $this->adapter->reveal(),
         ]);
     }
 
